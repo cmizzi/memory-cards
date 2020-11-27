@@ -1,7 +1,11 @@
 {
   "require": {
     "php": "^8.0",
+    "ext-json": "*",
     "phpunit/phpunit": "^9.4"
+  },
+  "require-dev": {
+    "symfony/var-dumper": "^5.1"
   },
   "autoload": {
     "psr-4": {
@@ -15,8 +19,5 @@
     "psr-4": {
       "Tests\\": "./tests"
     }
-  },
-  "require-dev": {
-    "symfony/var-dumper": "^5.1"
   }
 }

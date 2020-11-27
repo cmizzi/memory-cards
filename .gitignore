@@ -1,4 +1,4 @@
 /.cache
 /vendor
 /node_modules
-/dist
+/public/dist
