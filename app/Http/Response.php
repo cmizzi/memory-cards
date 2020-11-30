@@ -71,8 +71,8 @@ class Response
 			return $this;
 		}
 
-		// If the request comes from Ajax (XMLHttpRequest), we want return a JSON response.
-		if ($this->wantsJson()) {
+		// If the request comes from Ajax (XMLHttpRequest) or the content is an array, we want return a JSON response.
+		if ($this->wantsJson() || is_array($this->content)) {
 			// If the content is a string (can only be a string or array, based on typed constructor), we have to turn
 			// it into an array.
 			if (is_string($content)) {

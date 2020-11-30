@@ -1,10 +1,18 @@
 {
-  "private": true,
-  "scripts": {
-    "dev": "parcel index.html --out-dir public/dist --public-url=/dist",
-    "build": "parcel build index.html --out-dir public/dist --public-url=/dist"
-  },
-  "devDependencies": {
-    "parcel-bundler": "^1.12.4"
-  }
+	"private": true,
+	"scripts": {
+		"dev": "parcel index.html --out-dir public/dist --public-url=/dist",
+		"build": "parcel build index.html --out-dir public/dist --public-url=/dist"
+	},
+	"browserslist": [
+		">10%"
+	],
+	"devDependencies": {
+		"parcel-bundler": "^1.12.4",
+		"tailwindcss": "npm:@tailwindcss/postcss7-compat"
+	},
+	"dependencies": {
+		"autoprefixer": "9",
+		"postcss": "7"
+	}
 }

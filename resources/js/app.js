@@ -1,1 +1,5 @@
-console.log("here")
+import scoreboard from "./scoreboard"
+
+window.onload = async () => {
+	await scoreboard()
+}

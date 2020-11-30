@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Response;
-
 class HighScoresController implements Controller
 {
 	/**

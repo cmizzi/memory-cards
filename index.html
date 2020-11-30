@@ -4,12 +4,41 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
         <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+		<link rel="preconnect" href="https://fonts.gstatic.com">
+		<link rel="stylesheet" href="resources/css/tailwindcss.pcss">
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Pacifico&display=swap">
 
         <title>Document</title>
     </head>
 
-    <body>
+    <body class="font-body bg-blue-100">
+		<div class="bg-clip-text text-transparent absolute inset-0 flex items-center justify-center font-display text-7xl bg-gradient-to-r from-blue-100 to-blue-400 animate-pulse">
+			Loading...
+		</div>
+
+		<div class="absolute inset-0 flex justify-center align-center" id="scoreboard" x-cloak>
+			<table>
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Score</th>
+					</tr>
+				</thead>
+
+				<tbody>
+					<!-- Will be resolved by the JS -->
+				</tbody>
+			</table>
+		</div>
+
+		<template id="scoreboard-row">
+			<tr>
+				<td class="name"></td>
+				<td class="score"></td>
+			</tr>
+		</template>
 
         <script src="./resources/js/app.js"></script>
     </body>
