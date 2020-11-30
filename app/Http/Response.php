@@ -72,7 +72,7 @@ class Response
 		}
 
 		// If the request comes from Ajax (XMLHttpRequest) or the content is an array, we want return a JSON response.
-		if ($this->wantsJson() || is_array($this->content)) {
+		if ($this->wantsJson()) {
 			// If the content is a string (can only be a string or array, based on typed constructor), we have to turn
 			// it into an array.
 			if (is_string($content)) {
@@ -94,9 +94,10 @@ class Response
 	 *
 	 * @return bool
 	 */
+	#[Pure]
 	private function wantsJson(): bool
 	{
-		return ($_SERVER["HTTP_X_REQUESTED_WITH"] ?? null) === "XMLHttpRequest";
+		return ($_SERVER["HTTP_X_REQUESTED_WITH"] ?? null) === "XMLHttpRequest" || is_array($this->content);
 	}
 
 	/**

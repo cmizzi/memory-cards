@@ -2,7 +2,6 @@
 
 namespace Tests\Unit;
 
-use App\Exceptions\InvalidBoardException;
 use App\GameState;
 use Tests\TestCase;
 
@@ -28,9 +27,9 @@ class GameStateTest extends TestCase
 
 		// Simple cheat :)
 		$state->overrideBoard([
-			0 => ["card" => 1, "reveal" => false],
-			1 => ["card" => 1, "reveal" => false],
-			2 => ["card" => 2, "reveal" => false],
+			0 => ["type" => 1, "reveal" => false],
+			1 => ["type" => 1, "reveal" => false],
+			2 => ["type" => 2, "reveal" => false],
 		]);
 
 		// Reveal the first card (there's no pending card).
@@ -57,10 +56,10 @@ class GameStateTest extends TestCase
 
 		// Simple cheat :)
 		$state->overrideBoard([
-			0 => ["card" => 1, "reveal" => false],
-			1 => ["card" => 1, "reveal" => false],
-			2 => ["card" => 1, "reveal" => false],
-			3 => ["card" => 2, "reveal" => false],
+			0 => ["type" => 1, "reveal" => false],
+			1 => ["type" => 1, "reveal" => false],
+			2 => ["type" => 1, "reveal" => false],
+			3 => ["type" => 2, "reveal" => false],
 		]);
 
 		// Reveal the first card (there's no pending card).
@@ -96,24 +95,14 @@ class GameStateTest extends TestCase
 	/**
 	 * @test
 	 */
-	public function it_throws_an_exception_when_the_number_of_distinct_cards_exceed_the_maximum_number_of_available_tiles(): void
-	{
-		$this->expectException(InvalidBoardException::class);
-
-		new GameState(22);
-	}
-
-	/**
-	 * @test
-	 */
 	public function board_can_be_fully_solved(): void
 	{
 	    $state = new GameState;
 
 	    // Let's cheat again. Let's play with only 2 cards of the same type.
 		$state->overrideBoard([
-			0 => ["card" => 1, "reveal" => false],
-			1 => ["card" => 1, "reveal" => false],
+			0 => ["type" => 1, "reveal" => false],
+			1 => ["type" => 1, "reveal" => false],
 		]);
 
 		// Reveal our cards.
@@ -134,9 +123,9 @@ class GameStateTest extends TestCase
 
 	    // Override the board to make this test easier.
 		$state->overrideBoard([
-			0 => ["card" => 1, "reveal" => false],
-			1 => ["card" => 2, "reveal" => false],
-			2 => ["card" => 3, "reveal" => false],
+			0 => ["type" => 1, "reveal" => false],
+			1 => ["type" => 2, "reveal" => false],
+			2 => ["type" => 3, "reveal" => false],
 		]);
 
 		$state->reveal(0);

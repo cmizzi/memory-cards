@@ -9,7 +9,7 @@ class WelcomeController implements Controller
 	 *
 	 * @return string
 	 */
-	public function execute(): string
+	public function index(): string
 	{
 		// As our front is generated and not handle by PHP, we can't simply generate the content here but instead, we
 		// want return the content of our JS generated page.

@@ -2,70 +2,64 @@
 
 use App\Http\Controllers;
 use App\Http\Exceptions\HttpException;
-use App\Http\Exceptions\RedirectException;
+use App\Http\Exceptions\RouteNotFoundException;
 use App\Http\Response;
 
+// Charger les dépendances. En réalité, cela permet d'utiliser la PSR4, permettant d'utiliser les namespaces afin de
+// ranger proprement notre code.
 require_once __DIR__ . "/" . "../vendor/autoload.php";
 
-// Start the session for each request.
+// Démarrons les sessions : pour chaque requête, nous souhaitons avoir une session active afin de pouvoir
+// stocker/charger le plateau de jeu, ou simplement reconnaître l'utilisateur.
 session_start();
 
-// By default, `REQUEST_URI` header returns with the query string. We don't want them to match the controller path.
+// Stockons le chemin utilisé afin de servir la requête : toutes les requêtes sont envoyées à ce fichier. A nous de
+// déterminer si le chemin est une requête valide pour notre application. Nous n'avons besoin d'extraire que le chemin,
+// pas les arguments passés (`/mon-chemin`).
 $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
-// List our controllers definitions.
-$controllers = [
-	[ "method" => "GET"  , "path" => "/"           , "controller" => new Controllers\WelcomeController    ] ,
-	[ "method" => "GET"  , "path" => "/api/scores" , "controller" => new Controllers\HighScoresController ] ,
-	[ "method" => "POST" , "path" => "/api/game"   , "controller" => new Controllers\GameController       ] ,
+// Liste des chemins auquel nous avons une action spécifique. Pour chaque chemin, nous autorisons une méthode et
+// associons un contrôleur afin de séparer le code logique.
+$routes = [
+	"/"           => [ "method" => "GET"  , "action" => [Controllers\WelcomeController::class, "index"    ]] ,
+	"/api/scores" => [ "method" => "GET"  , "action" => [Controllers\HighScoresController::class, "index" ]] ,
+	"/api/game"   => [ "method" => "POST" , "action" => [Controllers\GameController::class, "store"       ]] ,
 ];
 
-// Define a global response that will be used if no route is matching the current request.
-$response = new Response("Oops, the page you're looking for doesn't exist.", 404);
-
-// Parse each controller and try to match it against the current request. The first controller which match wins.
-foreach ($controllers as $controller) {
-	// Check the client path with each controller path. If there's no match, continue with the next controller.
-	if ($controller["path"] !== $path) {
-		continue;
+try {
+	// Si la chemin n'existe pas, alors nous ne pouvons pas gérer la requête du client. Indiquons lui que cette requête
+	// est une erreur 404.
+	if (!isset($routes[$path])) {
+		throw new RouteNotFoundException;
 	}
 
-	try {
-		// Check the method. If the method does not match, we have to return a `405 Method Not Allowed` status code.
-		if ($controller["method"] !== $_SERVER["REQUEST_METHOD"]) {
-			throw new HttpException("Oops, the method \"{$_SERVER["REQUEST_METHOD"]}\" is not allowed for this route.", 405);
-		}
+	// Stockons la route courante dans une variable pour faciliter l'utilisation.
+	$route = $routes[$path];
 
-		// We're on a known path, let's call the associated controller and execute the logic.
-		$response = $controller["controller"]->execute();
-
-		// Check if the controller returns a Response. If not, we have to turn the controller response into a Response
-		// object to property handle the future behavior.
-		if (!$response instanceof Response) {
-			$response = new Response($response, 200);
-		}
+	// Le chemin existe. Maintenant, vérifions que la méthode correspond. S'il ne correspond pas, lançons de nouveau une
+	// exception.
+	if ($route["method"] !== $_SERVER["REQUEST_METHOD"]) {
+		throw new HttpException("Oops, the method \"{$_SERVER["REQUEST_METHOD"]}\" is not allowed for this route.", 405);
 	}
 
-	// In case of redirection.
-	catch (RedirectException $e) {
-		$response = new Response($e->path, $e->status);
-	}
+	// Exécutons le contrôleur ainsi que la méthode associée.
+	$response = call_user_func([new $route["action"][0], $route["action"][1]]);
 
-	// In case of generic HTTP exception.
-	catch (HttpException $e) {
-		$response = new Response($e->getMessage(), $e->status);
+	// Si la valeur retournée par le contrôleur n'est pas une réponse valide, alors essayons de la transformer.
+	if (!$response instanceof Response) {
+		$response = new Response($response, 200);
 	}
-
-	// Oops, an horrible error occurred. First, we need to response with a 500 error. Second, let's inform the user
-	// something wrong happen.
-	catch (Throwable $e) {
-		$response = new Response($e->getMessage(), 500);
-	}
-
-	// We can safely break the loop to prevent a new iteration of the loop.
-	break;
 }
 
+// Une erreur générique a été lancée depuis un contrôleur ou depuis l'implémentation du routage (URL incorrecte).
+catch (HttpException $e) {
+	$response = new Response($e->getMessage(), $e->status);
+}
 
-// Output the content generated by the controller.
+// Une erreur générique a été lancée.
+catch (Throwable $e) {
+	$response = new Response($e->getMessage(), 500);
+}
+
+// Nous sommes certains à ce point d'avoir une réponse à renvoyer au client.
 $response->send();

@@ -7,7 +7,7 @@ class HighScoresController implements Controller
 	/**
 	 * @return \array[][]
 	 */
-	public function execute(): array
+	public function index(): array
 	{
 		return [
 			"scores" => [
