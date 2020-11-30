@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\EmptyGameStateException;
+use App\Exceptions\MaximumScoreReachedException;
 use App\Game;
 use App\Exceptions\GameActionNotFound;
+use App\GameState;
 use App\Http\Exceptions\HttpException;
 use JetBrains\PhpStorm\ArrayShape;
 
@@ -56,6 +58,15 @@ class GameController implements Controller
 
 			// Est-ce que la partie est terminée ?
 			"is_party_over" => $state->isPartyOver(),
+
+			// Retourne le score lorsque la partie est terminée.
+			"score" => $state->getScore(),
+
+			// Retourne le temps maximal.
+			"max_score" => GameState::MAX_SCORE,
+
+			// Quand est-ce que l'utilisateur a démarré sa session de jeu ?
+			"started_at" => $state->startedAt(),
 		];
 	}
 }

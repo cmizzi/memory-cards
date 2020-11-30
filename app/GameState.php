@@ -12,6 +12,13 @@ class GameState
 	private const MAX_DISTINCT_CARDS = 9;
 
 	/**
+	 * Défini la valeur maximale du score (5 minutes, soit 300 secondes).
+	 *
+	 * @var int
+	 */
+	public const MAX_SCORE = 60 * 5;
+
+	/**
 	 * Représente l'état courant du jeu (le plateau).
 	 *
 	 * @var array
@@ -52,6 +59,20 @@ class GameState
 	 * @var bool
 	 */
 	private bool $hasFailed = false;
+
+	/**
+	 * Date et temps précis (en secondes) à laquelle l'utilisateur a lancé une nouvelle partie.
+	 *
+	 * @var int|null
+	 */
+	private ?int $startedAt = null;
+
+	/**
+	 * Score final de l'utilisateur.
+	 *
+	 * @var int|null
+	 */
+	private ?int $score = null;
 
 	/**
 	 * Initialiser un nouveau plateau.
@@ -133,16 +154,27 @@ class GameState
 
 		// Stockons le plateau généré afin de pouvoir le manipuler par les actions.
 		$this->board = $cards;
+
+		// On stocke la date courante du démarrage de la partie.
+		$this->startedAt = time();
 	}
 
 	/**
 	 * Action qui permet de révéler une carte.
 	 *
-	 * @param  int $cardIndex
+	 * @param int $cardIndex
 	 * @return GameState
 	 */
 	public function reveal(int $cardIndex): self
 	{
+		// Si le score actuel est supérieur au maximum autorisé, alors nous n'avons plus rien à faire.
+		if ($this->startedAt - time() > static::MAX_SCORE) {
+			// La partie est terminée.
+			$this->partyOver = true;
+
+			return $this;
+		}
+
 		// Cette action nécessite un index de carte (l'index d'un élément dans le plateau). Récupérons cette carte et
 		// définissons là comme la carte courante.
 		$currentCard = $this->board[$cardIndex];
@@ -175,7 +207,8 @@ class GameState
 			// Maintenant, regardons s'il reste des cartes à retourner. S'il n'y en a aucune, alors le jeu est terminée
 			// et le joueur a gagné.
 			if (empty($this->getRemainingCards())) {
-				$this->winner = true;
+				$this->score     = time() - $this->startedAt;
+				$this->winner    = true;
 				$this->partyOver = true;
 			}
 
@@ -257,6 +290,16 @@ class GameState
 	}
 
 	/**
+	 * Retourne le temps en secondes où le joueur a commencé à jouer.
+	 *
+	 * @return int|null
+	 */
+	public function startedAt(): ?int
+	{
+		return $this->startedAt;
+	}
+
+	/**
 	 * Action qui redémarre le jeu. Recréons une instance du jeu.
 	 *
 	 * @return $this
@@ -310,6 +353,16 @@ class GameState
 	public function getBoardHash(): string
 	{
 		return sha1(json_encode($this->board));
+	}
+
+	/**
+	 * Retourne le score de l'utilisateur.
+	 *
+	 * @return int|null
+	 */
+	public function getScore(): ?int
+	{
+		return $this->score;
 	}
 
 	/**

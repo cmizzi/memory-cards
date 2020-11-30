@@ -3,13 +3,17 @@ import {debounce} from "./lib";
 // Permet de savoir un rafraichissement du plateau est en attente.
 let pendingRefresh = false;
 
+// Interval de rafraichissement pour la progression du score en cours.
+let progressInterval = null
+
 /**
  * Cette méthode est appelée après chaque action utilisateur. Elle permet de convertir le nouveau plateau mis à jour
  * par le serveur en une modification du DOM.
  *
  * @param board
  */
-const refresh = (board) => {
+const refresh = (data) => {
+	const board  = data.board
 	const parent = document.getElementById("board");
 
 	for (const i in board) {
@@ -53,7 +57,8 @@ const debounceRefresh = debounce(refresh, 1000);
  *
  * @param board
  */
-const render = (board) => {
+const render = (data) => {
+	const board    = data.board
 	const template = document.getElementById("card");
 	const parent   = document.getElementById("board");
 
@@ -68,13 +73,13 @@ const render = (board) => {
 
 		// Lors du clic sur chacune des cartes, ajoutons un événement afin de pouvoir émettre l'action au serveur.
 		el.addEventListener("click", async function (ev) {
-			if (card.reveal || pendingRefresh) {
+			if (pendingRefresh || ev.target.getAttribute("card-reveal") === "true") {
 				return;
 			}
 
 			// On envoie l'action au serveur et attend la réponse.
-			const {board, current_card, has_failed} = await (await fetch("/api/game?action=reveal&with=" + i)).json()
-			const cls = `card__card-${current_card}`;
+			const data = await (await fetch("/api/game?action=reveal&with=" + i)).json()
+			const cls = `card__card-${data.current_card}`;
 
 			// On affiche la carte courante.
 			el.querySelector(".card__card").classList.add(cls);
@@ -83,9 +88,23 @@ const render = (board) => {
 			// Indiquons qu'un rafraichissement doit être effectué.
 			pendingRefresh = true;
 
+			if (data.is_party_over && data.is_winner) {
+				clearInterval(progressInterval);
+				alert("You did it in " + data.score + " seconds!");
+
+				return;
+			}
+
+			if (data.is_party_over) {
+				clearInterval(progressInterval);
+				alert("oh... the game is over. you exceed the time limit.");
+
+				return;
+			}
+
 			// Si l'utilisateur n'a pas tourné la bonne carte, nous allons devoir effectuer quelques effets visuels
 			// afin de lui indiquer que la suite a été interrompue.
-			if (has_failed) {
+			if (data.has_failed) {
 				// Ajoutons une classe spécifique à la carte cliquée.
 				el.classList.add("failure");
 
@@ -93,29 +112,39 @@ const render = (board) => {
 				// nous à renvoyer le serveur. Cette opération a pour but de ne pas immédiatement appliquer le
 				// nouvel état de jeu mais plutôt effectuer une transition afin de montrer à l'utilisateur les
 				// cartes en erreur.
-				for (const i in board) {
+				for (const i in data.board) {
 					const card = parent.querySelector(`.card[card-id="${i}"]`)
 
 					// Si la carte a été retournée face cachée par le serveur, ajoutons une classe spécifique.
-					if (card.getAttribute("card-reveal") === "true" && board[i].reveal === false) {
+					if (card.getAttribute("card-reveal") === "true" && data.board[i].reveal === false) {
 						card.classList.add("failure");
 					}
 				}
 
 				// Nous n'allons actualiser le plateau qu'après 2 secondes.
-				debounceRefresh(board)
+				debounceRefresh(data);
 			}
 
-				// Si aucune erreur n'a été effectuée (suite ou début de suite), alors nous pouvons directement
+			// Si aucune erreur n'a été effectuée (suite ou début de suite), alors nous pouvons directement
 			// appliquer le nouveau plateau.
 			else {
-				refresh(board);
+				refresh(data);
 			}
 		});
 
 		// On ajoute chaque enfant au parent.
 		parent.appendChild(el);
 	}
+
+	let i = Date.now() / 1000 - data.started_at;
+	const progress = document.querySelector("#progress");
+
+	progress.setAttribute("max", data.max_score);
+	progress.value = data.max_score - i;
+
+	progressInterval = setInterval(() => {
+		progress.value = data.max_score - i++;
+	}, 1000);
 }
 
 window.onload = async () => {
@@ -131,10 +160,10 @@ window.onload = async () => {
 
 			// On démarre le jeu. Nous n'avons pas besoin de récupérer l'intégralité de la réponse à ce moment donné, puisque
 			// seul le plateau nous intéresse.
-			const {board} = await (await fetch("/api/game?action=reset")).json();
+			const data = await (await fetch("/api/game?action=reset")).json();
 
 			// On effectue le premier rendu.
-			render(board);
+			render(data);
 
 			// On peut enlever l'indicateur, tout est chargé !
 			document.querySelector("#loading").setAttribute("x-cloak", "x-cloak");
