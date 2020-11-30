@@ -29,6 +29,8 @@ class SessionStorage implements Storage
 	public function set(GameState $state): self
 	{
 		$_SESSION[$this->key] = serialize($state);
+
+		return $this;
 	}
 
 	/**

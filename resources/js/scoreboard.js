@@ -14,10 +14,14 @@ export default async function scoreboard() {
 		const row = template.content.cloneNode(true)
 		const children = row.querySelectorAll("td");
 
-		children[0].textContent = scores[key].name
-		children[1].textContent = scores[key].score
+		children[0].textContent = +key + 1
+		children[1].textContent = scores[key].name
+		children[2].textContent = scores[key].score
 
 		// Append the template into the scoreboard.
 		el.appendChild(row)
 	}
+
+	document.querySelector("#scoreboard").removeAttribute("x-cloak");
+	document.querySelector("#loading").setAttribute("x-cloak", "x-cloak");
 }

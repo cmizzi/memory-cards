@@ -6,3 +6,34 @@
 [x-cloak] {
 	display: none;
 }
+
+.card {
+	@apply bg-white p-2 rounded-lg overflow-hidden transform hover:scale-110 transition-transform cursor-pointer;
+
+	&.failure {
+		.card__container {
+			@apply border-red-400;
+		}
+	}
+
+	.card__container {
+		@apply rounded-lg w-full flex items-center justify-center border-2 border-blue-200 overflow-hidden;
+
+		.card__card {
+			@apply flex items-center justify-center text-3xl text-blue-300 cursor-pointer;
+
+			/** Chaque carte fait 100x100 pixels. */
+			width  : 100px;
+			height : 100px;
+
+			@for $i from 0 to 18 {
+				&-$(i) {
+					/** Toutes les cartes sont contenues dans une seule image (tile). */
+					background-image: url("https://static.oclock.io/challenges/tests-techniques/cards.png");
+					background-position: 0 calc(100% - (100px * $(i)));
+				}
+			}
+		}
+	}
+}
+

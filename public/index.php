@@ -21,9 +21,9 @@ $path = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 // Liste des chemins auquel nous avons une action spécifique. Pour chaque chemin, nous autorisons une méthode et
 // associons un contrôleur afin de séparer le code logique.
 $routes = [
-	"/"           => [ "method" => "GET"  , "action" => [Controllers\WelcomeController::class, "index"    ]] ,
-	"/api/scores" => [ "method" => "GET"  , "action" => [Controllers\HighScoresController::class, "index" ]] ,
-	"/api/game"   => [ "method" => "POST" , "action" => [Controllers\GameController::class, "store"       ]] ,
+	"/"           => [ "method" => "GET" , "action" => [Controllers\WelcomeController::class, "index"    ]] ,
+	"/api/scores" => [ "method" => "GET" , "action" => [Controllers\HighScoresController::class, "index" ]] ,
+	"/api/game"   => [ "method" => "GET" , "action" => [Controllers\GameController::class, "store"       ]] ,
 ];
 
 try {

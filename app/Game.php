@@ -53,7 +53,7 @@ class Game
 	public function run(string $action, mixed $with = null): GameState
 	{
 		// Seulement deux actions sont disponibles : (re)-démarrer le jeu (`reset`) ou retourner une carte (`reveal`).
-		return match ($action) {
+		return $this->state = match ($action) {
 			"reset"  => $this->getState()->reset(),
 			"reveal" => $this->getState()->reveal($with),
 			default  => throw new GameActionNotFound("The game action does not exist."),

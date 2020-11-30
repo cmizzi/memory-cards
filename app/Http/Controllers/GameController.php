@@ -22,7 +22,7 @@ class GameController implements Controller
 		$game = new Game;
 
 		try {
-			$state = $game->run($_REQUEST["action"]);
+			$state = $game->run($_REQUEST["action"], $_REQUEST["with"] ?? null);
 			$game->saveState();
 		}
 
@@ -47,6 +47,9 @@ class GameController implements Controller
 
 			// Le type de carte jouée par l'utilisateur. Cette valeur sera vide si l'action est `reset`.
 			"current_card" => $state->getCurrentCard(),
+
+			// Indique au client si l'utilisateur a fait une erreur.
+			"has_failed" => $state->hasFailed(),
 
 			// Est-ce que la joueur a gagné ?
 			"is_winner" => $state->isWinner(),

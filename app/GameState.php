@@ -9,7 +9,7 @@ class GameState
 	 *
 	 * @var int
 	 */
-	private const MAX_DISTINCT_CARDS = 18;
+	private const MAX_DISTINCT_CARDS = 9;
 
 	/**
 	 * Représente l'état courant du jeu (le plateau).
@@ -47,6 +47,13 @@ class GameState
 	private ?int $currentCard = null;
 
 	/**
+	 * Est-ce qu'une suite a été ré-initialisée ?
+	 *
+	 * @var bool
+	 */
+	private bool $hasFailed = false;
+
+	/**
 	 * Initialiser un nouveau plateau.
 	 */
 	public function __construct()
@@ -64,7 +71,7 @@ class GameState
 		//    17 => 17,
 		//    18 => 18,
 		// ]
-		$cards = range(0, static::MAX_DISTINCT_CARDS);
+		$cards = range(0, static::MAX_DISTINCT_CARDS - 1);
 
 		// Pour chaque entrée (qui représente un type unique de carte), nous allons modifier le tableau afin d'y ajouter
 		// des informations complémentaires : un identifiant de carte (`type`) et un champ permettant de savoir si la
@@ -141,6 +148,9 @@ class GameState
 		$currentCard = $this->board[$cardIndex];
 		$this->currentCard = $currentCard["type"];
 
+		// Considérons qu'il n'y pas eu d'erreur de la part de l'utilisateur ici.
+		$this->hasFailed = false;
+
 		// S'il n'y pas de suite en attente, nous pouvons directement révélé le type de la carte courante.
 		if ($this->pendingSuit === null) {
 			$this->pendingSuit = $currentCard["type"];
@@ -185,6 +195,9 @@ class GameState
 
 		// On peut ré-initialiser la suite.
 		$this->pendingSuit = null;
+
+		// Oops, étant donné que la suite a été ré-initialisée, on considère que l'utilisateur a commis une erreur.
+		$this->hasFailed = true;
 
 		return $this;
 	}
@@ -244,23 +257,13 @@ class GameState
 	}
 
 	/**
-	 * Action qui redémarre le jeu. L'objectif ici n'est pas de générer un nouveau plateau mais plutôt de remettre à
-	 * zéro les actions effectuées par l'utilisateur.
+	 * Action qui redémarre le jeu. Recréons une instance du jeu.
 	 *
 	 * @return $this
 	 */
 	public function reset(): self
 	{
-		// Remettons à zéro les suites en cours ainsi que la carte courante.
-		$this->pendingSuit = null;
-		$this->currentCard = null;
-
-		// Pour toutes les cartes, retournons les face cachée.
-		foreach (array_keys($this->board) as $key) {
-			$this->board[$key]["reveal"] = false;
-		}
-
-		return $this;
+		return new static;
 	}
 
 	/**
@@ -287,6 +290,16 @@ class GameState
 		}
 
 		return $pendingCards;
+	}
+
+	/**
+	 * Returne vrai si l'action a ré-initialiser une suite.
+	 *
+	 * @return bool
+	 */
+	public function hasFailed(): bool
+	{
+		return $this->hasFailed;
 	}
 
 	/**
