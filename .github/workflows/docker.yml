@@ -8,6 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
+        name: Get the current tag
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+      -
         name: Checkout
         uses: actions/checkout@v2
       -
@@ -39,4 +43,4 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/memory-cards:latest
-            ghcr.io/${{ github.repository_owner }}/memory-cards:${{ github.ref }}
+            ghcr.io/${{ github.repository_owner }}/memory-cards:${{ steps.get_version.outputs.VERSION }}
