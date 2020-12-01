@@ -53,7 +53,7 @@ procédure :
 - un utilisateur clique sur le bouton « ré-initialiser »
    - HTTP/1.0 GET /api/game?action=reset ;
    - rendu du nouveau plateau ;
-   
+
 - un utilisateur clique sur une carte face cachée
    - HTTP/1.0 GET /api/game?action=reveal&with=4 ;
    - rendu du nouveau plateau ;
@@ -114,7 +114,7 @@ dossier `app/Models` contient la logique lié à la base de données : en effet,
 de résolution de chaque joueur ayant remporté la manche. Pour ce faire, et plutôt que de devoir travailler de partout
 avec des requêtes SQL, convertir les informations (etc.), l'utilisation de modèles permet de n'avoir qu'une source de
 vérité sur l'utilisation des informations récupérer/à envoyer à la base de données. Voyez ça comme un système modulaire
-permettant de faciliter les accès à la base de données. Les dossiers contenus `app/Http` sont propres aux requêtes HTTP : 
+permettant de faciliter les accès à la base de données. Les dossiers contenus `app/Http` sont propres aux requêtes HTTP :
 
 - quelle action effectuer sur une entrée spécifique (`app/Http/Controllers`) ;
 - comment envoyer une réponse à un client (`app/Http/Response.php`) ;
@@ -243,7 +243,7 @@ sont visibles pour l'utilisateur, etc. Bien sûr, d'autres notions sont disponib
   n'est pas respectée) ;
 - le type de la carte que le joueur vient de retourner (purement visuel, permet d'afficher la carte retournée par
   l'utilisateur si la suite n'est pas respectée) ;
-  
+
 D'autres informations y sont stockées comme un bool permettant de savoir si la partie est gagné, si la partie est perdue
 (le temps limite est atteint), etc. Ne prenons pas peur, n'hésitez pas à regarder la structure du fichier
 `App/GameState` afin d'y comprendre un peu mieux l'implémentation. Le code, dans son implémentation intègre des notions
@@ -285,6 +285,22 @@ yarn build
 
 A partir de ce point, le projet devrait être entièrement fonctionnel. Il ne reste plus qu'à configurer votre serveur PHP
 afin de résoudre le projet.
+
+## Déploiement
+
+Un déploiement par image Docker est disponible. Toute la génération est stockée
+dans le dossier `.ci`. Pour lancer un build :
+
+```bash
+docker build -t memory-cards -f .ci/Dockerfile .
+```
+
+Cette commande a pour but de construire l'image. Le build s'effectue en deux
+temps :
+
+- on construit la partie client (génération JS) ;
+- on installe les dépendances et le serveur interne afin de répondre aux
+  requêtes HTTP ;
 
 ## Exercices
 
