@@ -1,0 +1,123 @@
+@import "./reset.pcss";
+
+:root {
+	/** Définitions des couleurs . */
+	--color-white: #FFF;
+	--color-blue-100: rgba(219, 234, 254, 1);
+	--color-blue-200: rgba(191, 219, 254, 1);
+	--color-blue-300: rgba(147, 197, 253, 1);
+	--color-blue-400: rgba(96, 165, 250, 1);
+	--color-red-400: rgba(239, 68, 68, 1);
+}
+
+body {
+	font-family: "Inter", sans-serif;
+	background: var(--color-blue-100);
+	padding: 2rem;
+}
+
+.menu {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	.logo {
+		display: block;
+		font-size: 2.25rem;
+		line-height: 2.5rem;
+		font-family: "Pacifico", sans-serif;
+		color: var(--color-blue-300);
+
+		&__white {
+			color: var(--color-white);
+		}
+	}
+}
+
+.button {
+	display: block;
+	font-family: "Pacifico", sans-serif;
+	padding: 0.5rem;
+	backrgound: var(--color-blue-400);
+	color: var(--color-white);
+	border-radius: 2rem;
+	border-width: 4px;
+	border-color: var(--color-white);
+}
+
+.board {
+	margin-top: 2rem;
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 0.75rem;
+}
+
+@media (min-width: 1024px) {
+	.board {
+		grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+	}
+}
+
+.progress {
+	margin-top: 2rem;
+
+	progress {
+		width: 100%;
+	}
+}
+
+[x-cloak] {
+	display: none;
+}
+
+.card {
+	background: var(--color-white);
+	padding: 1.75rem;
+	border-radius: 1rem;
+	overflow: hidden;
+	transition: transform 150ms ease-in;
+	cursor: pointer;
+
+	&:hover {
+		transform: scale(1.05, 1.05);
+	}
+
+	&.failure {
+		.card__container {
+			border-color: var(--color-red-400);
+		}
+	}
+
+	.card__container {
+		border-radius: 1rem;
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		border-width: 2px;
+		border-color: var(--color-blue-200);
+		overflow: hidden;
+
+		.card__card {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.875rem;
+			line-height: 2.25rem;
+			color: var(--color-blue-300);
+
+			/** Chaque carte fait 100x100 pixels. */
+			width  : 100px;
+			height : 100px;
+
+			@for $i from 0 to 18 {
+				&-$(i) {
+					/** Toutes les cartes sont contenues dans une seule image (tile). */
+					background-image: url("/resources/assets/cards.png");
+					background-position: 0 calc(100% - (100px * $(i)));
+				}
+			}
+		}
+	}
+}
+

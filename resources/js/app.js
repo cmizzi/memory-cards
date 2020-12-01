@@ -157,20 +157,11 @@ window.onload = async () => {
 			// Le bouton de démarrage a été cliqué. Nous pouvons charger le jeu et le rendre.
 			ev.target.setAttribute("x-cloak", "x-cloak");
 
-			// Affichons l'indicateur de chargement.
-			document.querySelector("#loading").removeAttribute("x-cloak");
-
 			// On démarre le jeu. Nous n'avons pas besoin de récupérer l'intégralité de la réponse à ce moment donné, puisque
 			// seul le plateau nous intéresse.
 			const data = await (await fetch("/api/game?action=reset")).json();
 
 			// On effectue le premier rendu.
 			render(data);
-
-			// On peut enlever l'indicateur, tout est chargé !
-			document.querySelector("#loading").setAttribute("x-cloak", "x-cloak");
 		});
-
-	// On enlève l'indicateur de chargement.
-	document.querySelector("#loading").setAttribute("x-cloak", "x-cloak");
 }

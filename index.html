@@ -7,32 +7,24 @@
 
         <link rel="icon" href="data:;base64,iVBORw0KGgo=">
 		<link rel="preconnect" href="https://fonts.gstatic.com">
-		<link rel="stylesheet" href="resources/css/tailwindcss.pcss">
+		<link rel="stylesheet" href="resources/css/app.pcss">
 		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Pacifico&display=swap">
 
         <title>Document</title>
     </head>
 
-    <body class="font-body bg-blue-100 p-8">
-		<!--
-			Indicateur de chargement. Celui-ci permet d'attendre patiemment que les fichiers soient chargées et le
-			plateau chargé.
-		-->
-		<div id="loading" class="bg-clip-text text-transparent absolute inset-0 flex items-center justify-center font-display text-7xl bg-gradient-to-r from-blue-100 to-blue-400 animate-pulse">
-			Loading...
-		</div>
+    <body>
+		<div class="menu">
+			<h1 class="logo">Memory <span class="logo__white">cards</span></h1>
 
-		<div class="flex items-center justify-between w-full">
-			<h1 class="block text-4xl font-display text-blue-400">Memory <span class="text-white">cards</span></h1>
-
-			<button type="button" id="restart" class="block font-display p-2 bg-blue-400 text-white rounded-lg border-4 border-white">
+			<button type="button" id="restart" class="button">
 				Commencer
 			</button>
 		</div>
 
-		<div class="mt-8 grid grid-cols-3 md:grid-cols-6 gap-3" id="board"></div>
-		<div class="w-full mt-8">
-			<progress id="progress" class="w-full rounded-lg bg-gray-100"></progress>
+		<div class="board" id="board"></div>
+		<div class="progress">
+			<progress id="progress"></progress>
 		</div>
 
 		<!--
