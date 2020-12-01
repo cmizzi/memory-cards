@@ -269,6 +269,23 @@ Les tests ont été implémentés de façon à couvrir le maximum de détail pos
 
 N'hésitez pas à y faire un tour.
 
+## Installation
+
+La version 8 de PHP est exigée pour ce projet. En effet, il est toujours bon d'être à jour et de bénéficier des
+dernières fonctionnalités proposées par le language. De plus, `composer` ainsi que `yarn` sont les outils à tour faire,
+permettant de gérer les dépendances PHP et les dépendances JS (respectivement). Je vous
+recommande vivement d'aller voir les documentations officielles si vous ne savez pas comment les installer.
+
+Une fois votre environnement en place, il n'y a plus qu'à installer tout ça :
+
+```bash
+composer install
+yarn build
+```
+
+A partir de ce point, le projet devrait être entièrement fonctionnel. Il ne reste plus qu'à configurer votre serveur PHP
+afin de résoudre le projet.
+
 ## Exercices
 
 Histoire que ce soit plus fun, voici quelques propositions de modification :
