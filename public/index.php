@@ -58,15 +58,27 @@ try {
 	}
 }
 
-// Une erreur générique a été lancée depuis un contrôleur ou depuis l'implémentation du routage (URL incorrecte).
-catch (HttpException $e) {
-	$response = new Response($e->getMessage(), $e->status);
-}
-
-// Une erreur générique a été lancée.
+// Une erreur a été lancée.
 catch (Throwable $e) {
-	dd($e);
-	$response = new Response($e->getMessage(), 500);
+	// Simple système de debug. Si la variable d'environnement `APP_DEBUG=true`, alors on ne retourne pas une réponse
+	// propre au client mais plutôt une version nous permettant de debugger l'erreur. Attention cependant, on ne
+	// souhaite pas ce comportement en production, attention donc avec la valeur du champ :)
+	if (env("APP_DEBUG", false) === true) {
+		// On retourne l'erreur brute au client (formatée pour un développeur) et on coupe l'exécution du code.
+		//
+		// Abréviation pour `dump & die`.
+		dd($e);
+	}
+
+	// Si l'erreur a été générée par le contre (n'est pas dépendante du runtime PHP - TypeError, etc.)
+	if ($e instanceof HttpException) {
+		$response = new Response($e->getMessage(), $e->status);
+	}
+
+	// Sinon, c'est une erreur générique : un statut 500 est exigé.
+	else {
+		$response = new Response($e->getMessage(), 500);
+	}
 }
 
 // Nous sommes certains à ce point d'avoir une réponse à renvoyer au client.

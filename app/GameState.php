@@ -81,7 +81,7 @@ class GameState
 	 */
 	public function __construct()
 	{
-		// Coupons le jeu en deux : nous avons 18 cartes disponibles. Générons un tableau de 18 entrées.
+		// Coupons le jeu en deux : nous avons 9 cartes uniques. Générons un tableau de 9 entrées.
 		//
 		// [
 		//    0  => 0,
@@ -89,10 +89,9 @@ class GameState
 		//    2  => 2,
 		//    3  => 3,
 		//    4  => 4,
-		//    5  => 5,
 		//    ...
-		//    17 => 17,
-		//    18 => 18,
+		//    7  => 7,
+		//    8  => 8,
 		// ]
 		$cards = range(0, static::MAX_DISTINCT_CARDS - 1);
 
@@ -101,15 +100,13 @@ class GameState
 		// carte a été retournée ou non (`reveal`).
 		//
 		// [
-		//    0  => ["type" => 0  , "reveal" => false],
-		//    1  => ["type" => 1  , "reveal" => false],
-		//    2  => ["type" => 2  , "reveal" => false],
-		//    3  => ["type" => 3  , "reveal" => false],
-		//    4  => ["type" => 4  , "reveal" => false],
-		//    5  => ["type" => 5  , "reveal" => false],
+		//    0  => ["type" => 0 , "reveal" => false],
+		//    1  => ["type" => 1 , "reveal" => false],
+		//    2  => ["type" => 2 , "reveal" => false],
+		//    3  => ["type" => 3 , "reveal" => false],
 		//    ...
-		//    17 => ["type" => 17 , "reveal" => false],
-		//    18 => ["type" => 18 , "reveal" => false],
+		//    7  => ["type" => 7 , "reveal" => false],
+		//    8  => ["type" => 8 , "reveal" => false],
 		// ]
 		$sample = array_map(fn ($index) => ["type" => $index, "reveal" => false], $cards);
 
@@ -123,13 +120,13 @@ class GameState
 		//    4  => ["type" => 4  , "reveal" => false],
 		//    5  => ["type" => 5  , "reveal" => false],
 		//    ...
-		//    18 => ["type" => 18 , "reveal" => false],
-		//    19 => ["type" => 0  , "reveal" => false],
-		//    20 => ["type" => 1  , "reveal" => false],
-		//    21 => ["type" => 2  , "reveal" => false],
+		//    7  => ["type" => 7  , "reveal" => false],
+		//    8  => ["type" => 8  , "reveal" => false],
+		//    9  => ["type" => 0  , "reveal" => false],
+		//    10 => ["type" => 1  , "reveal" => false],
 		//    ...
-		//    35 => ["type" => 17 , "reveal" => false],
-		//    36 => ["type" => 18 , "reveal" => false],
+		//    16 => ["type" => 7 , "reveal" => false],
+		//    18 => ["type" => 8 , "reveal" => false],
 		// ]
 		$cards = [...$sample, ...$sample];
 
@@ -140,17 +137,15 @@ class GameState
 		//    0  => ["card" => 8  , "reveal" => false],
 		//    1  => ["card" => 1  , "reveal" => false],
 		//    2  => ["card" => 0  , "reveal" => false],
-		//    3  => ["card" => 17 , "reveal" => false],
-		//    4  => ["card" => 12 , "reveal" => false],
-		//    5  => ["card" => 4  , "reveal" => false],
+		//    3  => ["card" => 6 , "reveal" => false],
 		//    ...
-		//    18 => ["card" => 18 , "reveal" => false],
-		//    19 => ["card" => 0  , "reveal" => false],
-		//    20 => ["card" => 1  , "reveal" => false],
-		//    21 => ["card" => 2  , "reveal" => false],
+		//    7  => ["card" => 8 , "reveal" => false],
+		//    8  => ["card" => 0  , "reveal" => false],
+		//    9  => ["card" => 1  , "reveal" => false],
+		//    10 => ["card" => 2  , "reveal" => false],
 		//    ...
-		//    35 => ["card" => 13 , "reveal" => false],
-		//    36 => ["card" => 15 , "reveal" => false],
+		//    16 => ["card" => 7 , "reveal" => false],
+		//    17 => ["card" => 2 , "reveal" => false],
 		// ]
 		shuffle($cards);
 
@@ -175,12 +170,13 @@ class GameState
 		}
 
 		// Si le score actuel est supérieur au maximum autorisé, alors nous n'avons plus rien à faire.
-		if ($this->startedAt - time() > static::MAX_SCORE) {
+		if ($this->isTimeExceed()) {
 			// La partie est terminée.
 			$this->partyOver = true;
 
 			return $this;
 		}
+
 
 		// Cette action nécessite un index de carte (l'index d'un élément dans le plateau). Récupérons cette carte et
 		// définissons là comme la carte courante.
@@ -346,6 +342,18 @@ class GameState
 	}
 
 	/**
+	 * Retourne vrai si le temps est écoulé.
+	 *
+	 * @return bool
+	 */
+	public function isTimeExceed(): bool
+	{
+		// Si le timestamp courant est plus grand que l'addition entre maximum de secondes autorisée et le timestamp de
+		// départ, le jeu est terminé.
+		return time() > $this->startedAt + static::MAX_SCORE;
+	}
+
+	/**
 	 * Returne vrai si l'action a ré-initialiser une suite.
 	 *
 	 * @return bool
@@ -387,5 +395,14 @@ class GameState
 		$this->board = $board;
 
 		return $this;
+	}
+
+	/**
+	 * Permet de forcer un temps de démarrage à un temps donné.
+	 * @param int|null $startedAt
+	 */
+	public function setStartedAt(?int $startedAt): void
+	{
+		$this->startedAt = $startedAt;
 	}
 }

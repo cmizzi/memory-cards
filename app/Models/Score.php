@@ -62,7 +62,7 @@ class Score extends Model
 	/**
 	 * Retourne une liste de scores, triées par score ascendant (nous souhaitons avoir le score le plus bas en tête).
 	 *
-	 * @return array
+	 * @return self[]
 	 */
 	static public function get(): array
 	{
@@ -93,6 +93,12 @@ class Score extends Model
 		//    ],
 		// ]
 		// ```
-		return $statement->fetchAll(\PDO::FETCH_ASSOC);
+		$models = [];
+
+		foreach ($statement->fetchAll(\PDO::FETCH_ASSOC) as $entry) {
+			$models[] = new static($entry);
+		}
+
+		return $models;
 	}
 }

@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use App\GameState;
+use App\Models\Score;
 use Tests\TestCase;
 
 class GameStateTest extends TestCase
@@ -136,5 +137,45 @@ class GameStateTest extends TestCase
 
 		$state->reveal(2);
 		$this->assertEquals(3, $state->getCurrentCard());
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_saves_the_score_into_the_database_when_the_player_wins(): void
+	{
+		$state = new GameState;
+
+		// Override the board to make this test easier.
+		$state->overrideBoard([
+			0 => ["type" => 1, "reveal" => false],
+			1 => ["type" => 1, "reveal" => false],
+		]);
+
+		$state->reveal(0);
+		$state->reveal(1);
+
+		$scores = Score::get();
+
+		$this->assertTrue($state->isWinner());
+		$this->assertCount(1, $scores);
+		$this->assertEquals($state->getScore()->score, $scores[0]->score);
+	}
+
+	/**
+	 * @test
+	 */
+	public function it_stop_the_party_when_the_time_exceed(): void
+	{
+		$state = new GameState;
+
+		// On force le temps de démarrage à la limite autorisée - 10 secondes, afin d'être certain que le temps est
+		// expiré.
+		$state->setStartedAt(time() - GameState::MAX_SCORE - 10);
+		$state->reveal(12);
+
+		$this->assertTrue($state->isPartyOver());
+		$this->assertFalse($state->isWinner());
+		$this->assertNull($state->getScore());
 	}
 }

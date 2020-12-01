@@ -52,6 +52,12 @@ abstract class Model implements JsonSerializable
 	 */
 	static private function compileDsn(): string
 	{
+		// Cas spécifique pour `sqlite` : le DSN n'est pas formaté de la même manière : `sqlite:FILE_TO_USE`. Si nous
+		// utilisons le format générique (MySQL, PostgreSQL), nous aurons alors un fichier généré avec le DSN (pas top).
+		if (env("DB_CONNECTION") === "sqlite") {
+			return sprintf("sqlite:%s", env("DB_HOST"));
+		}
+
 		return vsprintf("%s:host=%s;port=%s;dbname=%s", [
 			env("DB_CONNECTION", "mysql"),
 			env("DB_HOST"),

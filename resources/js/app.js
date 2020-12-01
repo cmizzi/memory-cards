@@ -89,6 +89,7 @@ const render = (data) => {
 			pendingRefresh = true;
 
 			if (data.is_party_over && data.is_winner) {
+				refresh(data);
 				clearInterval(progressInterval);
 				alert("You did it in " + data.score.score + " seconds!");
 
@@ -96,6 +97,7 @@ const render = (data) => {
 			}
 
 			if (data.is_party_over) {
+				refresh(data);
 				clearInterval(progressInterval);
 				alert("oh... the game is over. you exceed the time limit.");
 

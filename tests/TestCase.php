@@ -23,7 +23,9 @@ abstract class TestCase extends \PHPUnit\Framework\TestCase
 		// Puisque la base est gérée en mémoire, nous avons besoin d'avoir un schema standard pour toutes les requêtes
 		// SQL. Définissons donc le schema général avant chaque test.
 		Model::getConnection()->exec(<<<EOSQL
-			CREATE TABLE IF NOT EXISTS `scores` (
+			DROP TABLE IF EXISTS `scores`;
+
+			CREATE TABLE `scores` (
 				`id` INTEGER PRIMARY KEY AUTOINCREMENT,
 				`score` INT unsigned,
 				`created_at` DATETIME
