@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Models\Score;
+
 class GameState
 {
 	/**
@@ -70,9 +72,9 @@ class GameState
 	/**
 	 * Score final de l'utilisateur.
 	 *
-	 * @var int|null
+	 * @var Score|null
 	 */
-	private ?int $score = null;
+	private ?Score $score = null;
 
 	/**
 	 * Initialiser un nouveau plateau.
@@ -167,6 +169,11 @@ class GameState
 	 */
 	public function reveal(int $cardIndex): self
 	{
+		// Si la partie est terminée, nous ne pouvons plus révéler de cartes.
+		if ($this->partyOver) {
+			return $this;
+		}
+
 		// Si le score actuel est supérieur au maximum autorisé, alors nous n'avons plus rien à faire.
 		if ($this->startedAt - time() > static::MAX_SCORE) {
 			// La partie est terminée.
@@ -207,9 +214,12 @@ class GameState
 			// Maintenant, regardons s'il reste des cartes à retourner. S'il n'y en a aucune, alors le jeu est terminée
 			// et le joueur a gagné.
 			if (empty($this->getRemainingCards())) {
-				$this->score     = time() - $this->startedAt;
 				$this->winner    = true;
 				$this->partyOver = true;
+
+				// Persistons le score dans la base de données.
+				$this->score = new Score(["score" => time() - $this->startedAt]);
+				$this->score->save();
 			}
 
 			return $this;
@@ -358,9 +368,9 @@ class GameState
 	/**
 	 * Retourne le score de l'utilisateur.
 	 *
-	 * @return int|null
+	 * @return Score|null
 	 */
-	public function getScore(): ?int
+	public function getScore(): ?Score
 	{
 		return $this->score;
 	}

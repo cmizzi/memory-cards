@@ -9,6 +9,13 @@ use App\Http\Response;
 // ranger proprement notre code.
 require_once __DIR__ . "/" . "../vendor/autoload.php";
 
+// Chargeons le fichier `.env` en mémoire (s'il existe) afin de pouvoir récupérer les informations spécifiées à
+// l'intérieur directement depuis la variable globale `$_ENV` ou depuis le helper `env`.
+try {
+	$dotenv = \Dotenv\Dotenv::createImmutable(__DIR__ . "/" . "../");
+	$dotenv->load();
+} catch (Throwable $e) {}
+
 // Démarrons les sessions : pour chaque requête, nous souhaitons avoir une session active afin de pouvoir
 // stocker/charger le plateau de jeu, ou simplement reconnaître l'utilisateur.
 session_start();
@@ -58,6 +65,7 @@ catch (HttpException $e) {
 
 // Une erreur générique a été lancée.
 catch (Throwable $e) {
+	dd($e);
 	$response = new Response($e->getMessage(), 500);
 }
 

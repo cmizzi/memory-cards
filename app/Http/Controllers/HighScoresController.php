@@ -2,24 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Score;
+use JetBrains\PhpStorm\ArrayShape;
+
 class HighScoresController implements Controller
 {
 	/**
 	 * @return \array[][]
 	 */
+	#[ArrayShape(["scores" => "array"])]
 	public function index(): array
 	{
 		return [
-			"scores" => [
-				[
-					"name"  => "Cyril Mizzi",
-					"score" => 86,
-				],
-				[
-					"name"  => "Cyril Mizzi",
-					"score" => 88,
-				],
-			]
+			"scores" => Score::get(),
 		];
 	}
 }

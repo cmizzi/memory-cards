@@ -90,7 +90,7 @@ const render = (data) => {
 
 			if (data.is_party_over && data.is_winner) {
 				clearInterval(progressInterval);
-				alert("You did it in " + data.score + " seconds!");
+				alert("You did it in " + data.score.score + " seconds!");
 
 				return;
 			}

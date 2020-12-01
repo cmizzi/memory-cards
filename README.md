@@ -90,9 +90,8 @@ différentes manières en cas de victoire ou de défaite.
 
 Pour réaliser une communication entre le client et le serveur, 3 entrées HTTP doivent être déclarées :
 
-- `POST /api/game` : permet d'envoyer au serveur une action client ;
+- `GET /api/game` : permet d'envoyer au serveur une action client ;
 - `GET /api/scores` : permet de récupérer les meilleurs scores ;
-- `POST /api/scores` : permet de sauvegarder le temps stocké côté serveur dans la base de données ;
 
 ### Base de données
 
@@ -102,9 +101,25 @@ aurons aussi besoin d'une seule table `scores`, qui sera définie comme suivant 
 
 ```
 id         : identifiant unique ;
-username   : nom de l'utilisateur (optionnel) ;
 score      : le temps (en seconde) de résolution du puzzle ;
 created_at : la date d'enregistrement ;
 ```
 
 Ces données ne peuvent pas être éditées, ni supprimées par le client.
+
+#### Création de la base
+
+Connectons-nous sur notre instance `mysql` et lançons les commandes suivantes :
+
+```sql
+CREATE TABLE `scores` (
+	`id` BIGINT NOT NULL AUTO_INCREMENT,
+	`score` INT unsigned,
+	`created_at` DATETIME DEFAULT NOW(),
+	UNIQUE KEY `id` (`id`) USING BTREE,
+KEY `score` (`score`) USING BTREE,
+KEY `created_at` (`created_at`) USING BTREE
+);
+```
+
+Cela a pour effet immédiat de créer une table avec les informations citées plus haut.
