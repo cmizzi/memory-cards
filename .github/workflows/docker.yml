@@ -40,4 +40,4 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ github.repository_owner }}/memory-cards:latest
-            ghcr.io/${{ github.repository_owner }}/memory-cards:${{ env.IMAGE_TAG }}
+            ghcr.io/${{ github.repository_owner }}/memory-cards:${{ github.ref }}
