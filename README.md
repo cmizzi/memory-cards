@@ -130,7 +130,7 @@ une sorte de glue entre les intéractions utilisateur et le code logique exécut
 Lors de la création d'un nouveau jeu (action `reset`), nous effectuons plusieurs actions :
 
 1. Générons une liste de 9 entrées (la clef correspond à l'index de la carte, et la valeur au type unique - citron,
-   fruit, etc. sout forme de chiffre);
+   fruit, etc. sous forme de chiffre);
 2. Dupliquons la liste sur elle-même afin d'obtenir les 18 entrées nécessaires (9 uniques * 2) ;
 3. Trions de manière aléatoire la liste afin que les cartes ne soient pas toujours placées aux mêmes endroits ;
 
@@ -272,7 +272,7 @@ N'hésitez pas à y faire un tour.
 ## Installation
 
 La version 8 de PHP est exigée pour ce projet. En effet, il est toujours bon d'être à jour et de bénéficier des
-dernières fonctionnalités proposées par le language. De plus, `composer` ainsi que `yarn` sont les outils à tour faire,
+dernières fonctionnalités proposées par le language. De plus, `composer` ainsi que `yarn` sont les outils à tout faire,
 permettant de gérer les dépendances PHP et les dépendances JS (respectivement). Je vous
 recommande vivement d'aller voir les documentations officielles si vous ne savez pas comment les installer.
 
