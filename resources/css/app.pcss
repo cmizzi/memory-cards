@@ -37,12 +37,50 @@ body {
 .button {
 	display: block;
 	font-family: "Pacifico", sans-serif;
-	padding: 0.5rem;
-	backrgound: var(--color-blue-400);
+	padding: 0.5rem 1rem;
+	background: var(--color-blue-400);
 	color: var(--color-white);
-	border-radius: 2rem;
+	border-radius: 0.5rem;
 	border-width: 4px;
 	border-color: var(--color-white);
+	margin-top: 1rem;
+}
+
+.scoreboard {
+	background: var(--color-white);
+	border-radius: 0.5rem;
+	margin-top: 2rem;
+	padding: 0.5rem;
+
+	table {
+		width: 100%;
+
+		tr:nth-child(2n) {
+			background: var(--color-blue-100);
+			width: 100%;
+		}
+	}
+
+	.rank {
+		width: 2rem;
+		text-align: right;
+		padding: 0.75rem;
+
+		&__value {
+			text-align: right;
+			padding: 0.75rem;
+		}
+	}
+
+	.score {
+		text-align: left;
+		padding: 0.75rem;
+
+		&__value {
+			text-align: left;
+			padding: 0.75rem;
+		}
+	}
 }
 
 .board {

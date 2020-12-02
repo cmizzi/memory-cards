@@ -1,4 +1,5 @@
 import {debounce} from "./lib";
+import scoreboard from "./scoreboard";
 
 // Permet de savoir un rafraichissement du plateau est en attente.
 let pendingRefresh = false;
@@ -163,6 +164,9 @@ window.onload = async () => {
 			// Le bouton de démarrage a été cliqué. Nous pouvons charger le jeu et le rendre.
 			ev.target.setAttribute("x-cloak", "x-cloak");
 
+			// Cachons le tableau des scores.
+			document.querySelector("#scoreboard").setAttribute("x-cloak", "x-cloak");
+
 			// On démarre le jeu. Nous n'avons pas besoin de récupérer l'intégralité de la réponse à ce moment donné, puisque
 			// seul le plateau nous intéresse.
 			const data = await (await fetch("/api/game?action=reset")).json();
@@ -170,4 +174,6 @@ window.onload = async () => {
 			// On effectue le premier rendu.
 			render(data);
 		});
+
+	await scoreboard();
 }

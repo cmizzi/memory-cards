@@ -15,8 +15,7 @@ export default async function scoreboard() {
 		const children = row.querySelectorAll("td");
 
 		children[0].textContent = +key + 1
-		children[1].textContent = scores[key].name
-		children[2].textContent = scores[key].score
+		children[1].textContent = scores[key].score
 
 		// Append the template into the scoreboard.
 		el.appendChild(row)
