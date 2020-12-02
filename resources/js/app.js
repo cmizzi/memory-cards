@@ -91,7 +91,7 @@ const render = (data) => {
 			if (data.is_party_over && data.is_winner) {
 				refresh(data);
 				clearInterval(progressInterval);
-				alert("You did it in " + data.score.score + " seconds!");
+				alert("Vous avez résolu le puzzle en " + data.score.score + " secondes. Bravo!");
 
 				return;
 			}
@@ -99,7 +99,7 @@ const render = (data) => {
 			if (data.is_party_over) {
 				refresh(data);
 				clearInterval(progressInterval);
-				alert("oh... the game is over. you exceed the time limit.");
+				alert("Oh... la partie est terminée. Vous devriez en recommencer une !");
 
 				return;
 			}
@@ -146,6 +146,12 @@ const render = (data) => {
 
 	progressInterval = setInterval(() => {
 		progress.value = data.max_score - i++;
+
+		// A chaque seconde, on vérifie que le temps n'est pas expiré.
+		if (progress.value <= 0) {
+			clearInterval(progressInterval);
+			alert("Oh... Le temps maximal a été atteint. Dommage!");
+		}
 	}, 1000);
 }
 
