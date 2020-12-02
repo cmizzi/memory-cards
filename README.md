@@ -302,6 +302,16 @@ temps :
 - on installe les dépendances et le serveur interne afin de répondre aux
   requêtes HTTP ;
 
+### Github Docker registry
+
+Afin de faciliter le déploiement, une action `github` a été mise en place afin de construire l'image après chaque
+release. Il n'y a plus qu'à l'utiliser :
+
+```bash
+docker pull ghcr.io/cmizzi/memory-cards:0.1 # specific tag version
+docker pull ghcr.io/cmizzi/memory-cards:latest # latest version
+```
+
 ## Exercices
 
 Histoire que ce soit plus fun, voici quelques propositions de modification :
