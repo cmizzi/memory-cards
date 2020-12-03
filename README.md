@@ -286,6 +286,14 @@ yarn build
 A partir de ce point, le projet devrait être entièrement fonctionnel. Il ne reste plus qu'à configurer votre serveur PHP
 afin de résoudre le projet.
 
+### Configuration
+
+Vous pouvez modifier les informations de connexion à la base de données directement depuis le fichier `.env` (copie du
+fichier de `.env.example`). Celui-ci défini plusieurs variables d'environnement permettant de modifier à la volée les
+différentes configurations possibles. L'avantage principal des variables d'environnement est de pouvoir être statique
+(via le fichier `.env`) ou bien propre au déploiement (via Docker, par exemple). Cela évite de déplacer des fichiers
+de configuration et permet d'avoir des environnements propres à chaque utilisation.
+
 ## Déploiement
 
 Un déploiement par image Docker est disponible. Toute la génération est stockée
@@ -312,6 +320,32 @@ docker pull ghcr.io/cmizzi/memory-cards:0.1 # specific tag version
 docker pull ghcr.io/cmizzi/memory-cards:latest # latest version
 ```
 
+### Utilisation via `docker-compose`
+
+Voici un example simple d'utilisation via `docker-compose` :
+
+```yaml
+version: 3
+services:
+	app:
+		image: ghcr.io/cmizzi/memory-cards:latest
+		environment:
+			DB_CONNECTION: mysql
+			DB_HOST: mysql
+			DB_USERNAME: root
+			DB_PASSWORD: root
+		ports:
+			- 80:80 # Accessible via `localhost` ou `127.0.0.1:80`
+ 
+  	mysql:
+ 		image: mysql:8
+		command: mysqld --max_allowed_packet=128M --sql-mode=
+		environment:
+			MYSQL_ROOT_PASSWORD: root
+		ports:
+			- 3306:3306 # Permet de se connecter depuis l'hôte via `mysql`
+```
+
 ## Exercices
 
 Histoire que ce soit plus fun, voici quelques propositions de modification :
@@ -321,3 +355,6 @@ Histoire que ce soit plus fun, voici quelques propositions de modification :
 - permettre de jouer avec plus de 2 cartes uniques (par exemple, trouver 3, 4 ou `n` cartes du même type) ;
 - permettre d'enregistrer un nom dès que la partie est terminée afin d'ajouter cette information dans le tableau des
   scores ;
+- lors du déploiement via Docker, mettre en place une instance `Caddy` afin de servir l'application en HTTPS et sous un
+  domaine spécifique ;
+- ajouter une persistance au conteneur `mysql` afin de conserver l'état de la base entre chaque redémarrage ;
