@@ -283,8 +283,20 @@ composer install
 yarn build
 ```
 
-A partir de ce point, le projet devrait être entièrement fonctionnel. Il ne reste plus qu'à configurer votre serveur PHP
+À partir de ce point, le projet devrait être entièrement fonctionnel. Il ne reste plus qu'à configurer votre serveur PHP
 afin de résoudre le projet.
+
+### Base de données
+
+Pour initialiser la base de données, vous avez besoin du schema suivant (`mysql`) :
+
+```mysql
+CREATE TABLE `scores` (
+	`id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+	`score` INT unsigned,
+	`created_at` DATETIME
+);
+```
 
 ### Configuration
 
@@ -292,7 +304,21 @@ Vous pouvez modifier les informations de connexion à la base de données direct
 fichier de `.env.example`). Celui-ci défini plusieurs variables d'environnement permettant de modifier à la volée les
 différentes configurations possibles. L'avantage principal des variables d'environnement est de pouvoir être statique
 (via le fichier `.env`) ou bien propre au déploiement (via Docker, par exemple). Cela évite de déplacer des fichiers
-de configuration et permet d'avoir des environnements propres à chaque utilisation.
+de configuration et permet d'avoir des environnements propres à chaque utilisation. Exemple du fichier `.env` (à
+modifier selon votre cas d'usage) :
+
+```dotenv
+APP_DEBUG=false # Lorsqu'une exception est lancée, avoir un affichage plus technique
+
+DB_CONNECTION=mysql # Moteur de base de données 
+DB_PORT=3306 # Port de connexion
+DB_HOST=localhost # Hôte
+DB_DATABASE=memory_cards # Nom de la base de données à utiliser
+DB_USERNAME=root # Utilisateur
+DB_PASSWORD=root # Mot de passe
+```
+
+Attention, ce fichier `.env` ne doit jamais être présent dans les systèmes de versioning (informations sensibles).
 
 ## Déploiement
 
@@ -334,6 +360,7 @@ services:
       DB_HOST: mysql
       DB_USERNAME: root
       DB_PASSWORD: root
+	  DB_DATABASE: memory_cards
     ports:
       - 80:80 # Accessible via `localhost` ou `127.0.0.1:80`
 
