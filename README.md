@@ -327,23 +327,23 @@ Voici un example simple d'utilisation via `docker-compose` :
 ```yaml
 version: 3
 services:
-	app:
-		image: ghcr.io/cmizzi/memory-cards:latest
-		environment:
-			DB_CONNECTION: mysql
-			DB_HOST: mysql
-			DB_USERNAME: root
-			DB_PASSWORD: root
-		ports:
-			- 80:80 # Accessible via `localhost` ou `127.0.0.1:80`
- 
-  	mysql:
- 		image: mysql:8
-		command: mysqld --max_allowed_packet=128M --sql-mode=
-		environment:
-			MYSQL_ROOT_PASSWORD: root
-		ports:
-			- 3306:3306 # Permet de se connecter depuis l'hôte via `mysql`
+  app:
+    image: ghcr.io/cmizzi/memory-cards:latest
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: mysql
+      DB_USERNAME: root
+      DB_PASSWORD: root
+    ports:
+      - 80:80 # Accessible via `localhost` ou `127.0.0.1:80`
+
+  mysql:
+    image: mysql:8
+    command: mysqld --max_allowed_packet=128M --sql-mode=
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306 # Permet de se connecter depuis l'hôte via `mysql`
 ```
 
 ## Exercices
