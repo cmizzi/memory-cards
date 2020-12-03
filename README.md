@@ -294,6 +294,9 @@ Pour initialiser la base de données, vous avez besoin du schema suivant (`mysql
 # Créons d'abord la base de données.
 CREATE DATABASE memory_cards;
 
+# On switch sur cette nouvelle base de données.
+USE memory_cards;
+
 # Créons la table des scores.
 CREATE TABLE `scores` (
 	`id` INTEGER PRIMARY KEY AUTO_INCREMENT,
